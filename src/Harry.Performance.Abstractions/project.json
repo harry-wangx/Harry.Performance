@@ -1,0 +1,74 @@
+﻿{
+  "packOptions": {
+    "summary": "Harry.Performance.Abstractions",
+    "tags": [ "performance" ],
+    "owners": [ "Harry" ],
+    "projectUrl": "https://github.com/harry-wangx/Harry.Performance",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/harry-wangx/Harry.Performance"
+    }
+  },
+  "title": "Harry.Performance.Abstractions",
+  "version": "0.1.0",
+  "authors": [ "Harry" ],
+  "description": "Harry.Performance.Abstractions",
+
+  "buildOptions": {
+
+  },
+  "dependencies": {
+
+  },
+  "frameworks": {
+    "net20": {
+      "frameworkAssemblies": {
+
+      }
+    },
+    "net35": {
+      "frameworkAssemblies": {
+
+      }
+    },
+    "net40": {
+      "frameworkAssemblies": {
+
+      }
+    },
+    "net45": {
+      "buildOptions": {
+        "define": [ "ASYNC" ]
+      },
+      "frameworkAssemblies": {
+
+      },
+      "dependencies": {
+
+      }
+    },
+
+    "netstandard1.3": {
+      "buildOptions": {
+        "define": [ "ASYNC", "COREFX" ]
+      },
+      "dependencies": {
+        "System.Collections": "4.0.11",
+        "System.Collections.Concurrent": "4.0.12",
+        "System.Collections.NonGeneric": "4.0.1",
+        "System.Dynamic.Runtime": "4.0.11",
+        "System.Diagnostics.Process": "4.1.0",
+        "System.Linq": "4.1.0",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Reflection.TypeExtensions": "4.1.0",
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Runtime.InteropServices": "4.1.0",
+        "System.Text.RegularExpressions": "4.1.0",
+        "System.Threading": "4.0.11",
+        "System.Net.Http": "4.1.0"
+      }
+    }
+  }
+}
