@@ -1,4 +1,4 @@
-﻿{
+{
   "packOptions": {
     "summary": "Harry.Performance",
     "tags": [ "performance" ],
@@ -18,6 +18,8 @@
 
   },
   "dependencies": {
+    "Harry.Common": "0.2.0",
+    "Harry.Logging": "0.3.1",
     "Harry.Performance.Abstractions": "0.1.0"
   },
   "frameworks": {
@@ -33,6 +35,8 @@
     },
     "net40": {
       "frameworkAssemblies": {
+      },
+      "dependencies": {
 
       }
     },
@@ -68,8 +72,8 @@
         "System.Text.RegularExpressions": "4.1.0",
         "System.Threading": "4.0.11",
         "System.Threading.Thread": "4.0.0",
-        "System.Console": "4.0.0"
-
+        "System.Console": "4.0.0",
+        "System.Threading.ThreadPool": "4.0.10"
       }
     }
   }

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 //收集器接口
 //-----------------------------------------------------------------------
-#if !NET20 && !NET35
+#if ASYNC
 using System.Threading.Tasks;
 #endif
 
@@ -10,12 +10,11 @@ namespace Harry.Performance
 {
     public interface ISpanCollector
     {
-        void Collect(params Span[] spans);
+        void Collect(params ISpan[] spans);
 
-#if !NET20 && !NET35
-        Task CollectAsync(params Span[] spans);
-#endif
+        void OnStart();
 
+        void OnComplete(long elapsedMilliseconds);
 
     }
 }
