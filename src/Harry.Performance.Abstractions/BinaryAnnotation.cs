@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -31,9 +30,9 @@ namespace Harry.Performance
         /// <summary>
         /// Service endpoint.
         /// </summary>
-        public IPEndPoint Endpoint;
+        public EndPoint Endpoint;
 
-        public BinaryAnnotation(string key, byte[] value, AnnotationType annotationType, IPEndPoint endpoint) : this()
+        public BinaryAnnotation(string key, byte[] value, AnnotationType annotationType, EndPoint endpoint) : this()
         {
             Key = key;
             Value = value;
@@ -152,7 +151,7 @@ namespace Harry.Performance
         /// with <paramref name="endpoint"/> set and all other fields copied 
         /// from the current instance.
         /// </summary>
-        public BinaryAnnotation WithEndpoint(IPEndPoint endpoint) => new BinaryAnnotation(Key, Value, AnnotationType, endpoint);
+        public BinaryAnnotation WithEndpoint(EndPoint endpoint) => new BinaryAnnotation(Key, Value, AnnotationType, endpoint);
 
         public override string ToString() => $"BinaryAnnotation({Key}, {Value}, {AnnotationType}, {Endpoint})";
     }

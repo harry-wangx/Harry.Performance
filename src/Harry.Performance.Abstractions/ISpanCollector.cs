@@ -10,7 +10,7 @@ namespace Harry.Performance
 {
     public interface ISpanCollector
     {
-        void Collect(params ISpan[] spans);
+        void Collect(params Span[] spans);
 
         void OnStart();
 

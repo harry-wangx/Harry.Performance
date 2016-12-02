@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 
 namespace Harry.Performance
@@ -115,14 +114,14 @@ namespace Harry.Performance
         /// Multiple addresses are possible when a client changes its ip or port within
         /// a span.
         /// </summary>
-        public static BinaryAnnotation ClientAddress(IPEndPoint endpoint) => new BinaryAnnotation(AnnotationConstants.ClientAddress, TrueBinary, AnnotationType.Bool, endpoint);
+        public static BinaryAnnotation ClientAddress(EndPoint endpoint) => new BinaryAnnotation(AnnotationConstants.ClientAddress, TrueBinary, AnnotationType.Bool, endpoint);
 
         /// <summary>
         /// Indicates a server address ("sa") in a span. Most likely, there's only one.
         /// Multiple addresses are possible when a client is redirected, or fails to a
         /// different server ip or port.
         /// </summary>
-        public static BinaryAnnotation ServerAddress(IPEndPoint endpoint) => new BinaryAnnotation(AnnotationConstants.ServerAddress, TrueBinary, AnnotationType.Bool, endpoint);
+        public static BinaryAnnotation ServerAddress(EndPoint endpoint) => new BinaryAnnotation(AnnotationConstants.ServerAddress, TrueBinary, AnnotationType.Bool, endpoint);
 
         /// <summary>
         /// Creates a <see cref="BinaryAnnotation"/> for a boolean value.

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Harry.Performance.Collector
 {
-    public sealed class DebugCollector //: ISpanCollector
+    public sealed class DebugCollector : ISpanCollector
     {
         private readonly TextWriter _writer;
 
@@ -31,14 +31,14 @@ namespace Harry.Performance.Collector
             _writer.Flush();
         }
 
-
-#if ASYNC
-
-        public async Task CollectAsync(params Span[] spans)
+        public void OnStart()
         {
-            await Task.Run(() => Collect(spans));
+            _writer.WriteLine(string.Format("[0]called OnStart",DateTime.Now.ToString()));
         }
 
-#endif
+        public void OnComplete(long elapsedMilliseconds)
+        {
+            _writer.WriteLine(string.Format("[0]called OnComplete", DateTime.Now.ToString()));
+        }
     }
 }

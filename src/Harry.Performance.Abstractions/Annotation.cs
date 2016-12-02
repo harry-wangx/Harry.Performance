@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Harry.Performance
@@ -23,9 +22,9 @@ namespace Harry.Performance
         /// <summary>
         /// Service endpoint.
         /// </summary>
-        public readonly IPEndPoint Endpoint;
+        public readonly EndPoint Endpoint;
 
-        public Annotation(string value, DateTime timestamp, IPEndPoint endpoint)
+        public Annotation(string value, DateTime timestamp, EndPoint endpoint)
         {
             Timestamp = timestamp;
             Value = value;
@@ -50,7 +49,7 @@ namespace Harry.Performance
         /// <paramref name="endpoint"/> set and all other fields copied 
         /// from current instance.
         /// </summary>
-        public Annotation WithEndpoint(IPEndPoint endpoint) => new Annotation(Value, Timestamp, endpoint);
+        public Annotation WithEndpoint(EndPoint endpoint) => new Annotation(Value, Timestamp, endpoint);
 
         public bool Equals(Annotation other) => other.Timestamp == Timestamp && Equals(other.Value, Value) && Equals(other.Endpoint, Endpoint);
 
@@ -62,7 +61,7 @@ namespace Harry.Performance
             {
                 var hashCode = Timestamp.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Endpoint != null ? Endpoint.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ this.Endpoint.GetHashCode();
                 return hashCode;
             }
         }

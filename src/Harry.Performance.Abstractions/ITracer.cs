@@ -6,8 +6,6 @@ namespace Harry.Performance
 {
     public interface ITracer : IDisposable
     {
-        bool IsTraceOn { get; }
-
-        void Collect(params ISpan[] spans);
+        void Collect(params Span[] spans);
     }
 }
