@@ -1,38 +1,36 @@
-﻿{
-  "packOptions": {
-    "summary": "Harry.Performance.Abstractions",
-    "tags": [ "performance" ],
-    "owners": [ "Harry" ],
-    "projectUrl": "https://github.com/harry-wangx/Harry.Performance",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/harry-wangx/Harry.Performance"
-    }
-  },
-  "title": "Harry.Performance.Abstractions",
-  "version": "0.1.0",
-  "authors": [ "Harry" ],
-  "description": "Harry.Performance.Abstractions",
+{
+  "version": "0.1.0-alpha1",
 
-  "buildOptions": {
-
-  },
   "dependencies": {
-
+    "Harry.Performance.Abstractions": "0.1.0",
+    //"Harry.Logging.Abstractions": "0.1.1",
+    "Harry.Logging": "0.3.4",
+    "Newtonsoft.Json": "9.0.1",
+    "Harry.Common": "0.2.4-alpha1"
   },
+
   "frameworks": {
     "net20": {
       "frameworkAssemblies": {
+
+      },
+      "dependencies": {
 
       }
     },
     "net35": {
       "frameworkAssemblies": {
 
+      },
+      "dependencies": {
+
       }
     },
     "net40": {
       "frameworkAssemblies": {
+
+      },
+      "dependencies": {
 
       }
     },
@@ -44,7 +42,6 @@
 
       },
       "dependencies": {
-
       }
     },
 
@@ -67,7 +64,9 @@
         "System.Runtime.InteropServices": "4.3.0",
         "System.Text.RegularExpressions": "4.3.0",
         "System.Threading": "4.3.0",
-        "System.Net.Http": "4.3.0"
+        "System.Threading.Thread": "4.3.0",
+        "System.Net.Http": "4.3.0",
+        "System.Net.Requests": "4.3.0"
       }
     }
   }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Harry.Performance.Collector
 {
-    public sealed class DebugCollector : ISpanCollector
+    public sealed class DebugCollector : ISpanCollector,IMetricCollector
     {
         private readonly TextWriter _writer;
 

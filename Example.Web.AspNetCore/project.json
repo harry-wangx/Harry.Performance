@@ -13,7 +13,7 @@
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Harry.Performance.AspNetCore": "0.1.0-alpha1",
-    "System.Runtime.Extensions": "4.1.0"
+    "System.Runtime.Extensions": "4.3.0"
   },
 
   "tools": {

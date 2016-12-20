@@ -9,73 +9,98 @@ using System.Threading.Tasks;
 
 namespace Harry.Performance
 {
-    public class Tracer : ITracer
+    public sealed class Tracer : ITracer, IDisposable
     {
+        /// <summary>
+        /// 当前追踪器状态
+        /// </summary>
+        public enum State { Waiting,Started,Stoped }
+
         private static Random random = new Random();
-
-
-        private readonly System.Diagnostics.Stopwatch stopwatch;
-        private readonly List<ISpanCollector> lstCollector;
+        
+        private readonly List<ISpanCollector> lstSpanCollector;
+        private readonly List<IMetricCollector> lstMetrictCollector;
         private readonly TraceHeader? traceHeader;
+
+        private System.Diagnostics.Stopwatch stopwatch;
         private bool useStopwatch;
+        private State state = State.Waiting;
 
 
-        private Tracer(IPerformanceConfig config, ISpanCollector[] collectors, TraceHeader? traceHeader, bool useStopwatch = false)
-        {
-            this.lstCollector = new List<ISpanCollector>();
-            this.lstCollector.AddRange(collectors);
-            this.traceHeader = traceHeader;
-
-            onStart();
-
-            this.useStopwatch = useStopwatch;
-            if (useStopwatch)
-            {
-                stopwatch = new Stopwatch();
-                stopwatch.Start();
-            }
-        }
-
-        public static Tracer TryCreate(IPerformanceConfig config, Func<bool> funcBypass = null, Func<ISpanCollector[]> funcCollectors = null, Func<TraceHeader?> funcTraceHeader = null)
+        internal Tracer(IPerformanceConfig config, ICollector[] collectors, TraceHeader? traceHeader, bool useStopwatch = false)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
 
-            //配置未开启,直接返回
-            if (!config.IsEnabled || (funcBypass != null && funcBypass()))
+            if (collectors != null && collectors.Length > 0)
             {
-                return null;
+                ISpanCollector spanCollector = null;
+                IMetricCollector metricCollector = null;
+                foreach (var item in collectors)
+                {
+                    if ((spanCollector = item as ISpanCollector) != null)
+                    {
+                        if (lstSpanCollector == null)
+                        {
+                            lstSpanCollector = new List<ISpanCollector>();
+                        }
+                        lstSpanCollector.Add(spanCollector);
+                    }
+                    else if ((metricCollector = item as IMetricCollector) != null)
+                    {
+                        if (lstMetrictCollector == null)
+                        {
+                            lstMetrictCollector = new List<IMetricCollector>();
+                        }
+                        lstMetrictCollector.Add(metricCollector);
+                    }
+                }
             }
 
-            //获取Collector
-            ISpanCollector[] aryCollector = null;
-            if (funcCollectors != null)
-            {
-                aryCollector = funcCollectors();
-            }
-            else
-            {
-                //如果未单独提供局部Collector,则去全局查找
-                aryCollector = CollectorManager.GetCollectors();
-            }
+            this.traceHeader = traceHeader;
+            this.useStopwatch = useStopwatch;
 
-            //之所以要在这里判断一次collector数组元素数量,是因为如果没有collector,
-            //就没有继续追踪的必要,也就不必再获取TraceHeader
-            if (aryCollector == null || aryCollector.Length <= 0)
-            {
-                return null;
-            }
-
-            TraceHeader? traceHeader = null;
-            if (funcTraceHeader != null)
-            {
-                traceHeader = funcTraceHeader();
-            }
-
-            if (traceHeader == null && random.NextDouble() > config.SampleRate)
-                return null;
-
-            return new Tracer(config, aryCollector, traceHeader);
         }
+
+        //public static Tracer TryCreate(IPerformanceConfig config, Func<bool> funcBypass = null, Func<ISpanCollector[]> funcCollectors = null, Func<TraceHeader?> funcTraceHeader = null)
+        //{
+        //    if (config == null) throw new ArgumentNullException(nameof(config));
+
+        //    //配置未开启,直接返回
+        //    if (!config.IsEnabled || (funcBypass != null && funcBypass()))
+        //    {
+        //        return null;
+        //    }
+
+        //    //获取Collector
+        //    ISpanCollector[] aryCollector = null;
+        //    if (funcCollectors != null)
+        //    {
+        //        aryCollector = funcCollectors();
+        //    }
+        //    else
+        //    {
+        //        //如果未单独提供局部Collector,则去全局查找
+        //        aryCollector = CollectorManager.GetCollectors();
+        //    }
+
+        //    //之所以要在这里判断一次collector数组元素数量,是因为如果没有collector,
+        //    //就没有继续追踪的必要,也就不必再获取TraceHeader
+        //    if (aryCollector == null || aryCollector.Length <= 0)
+        //    {
+        //        return null;
+        //    }
+
+        //    TraceHeader? traceHeader = null;
+        //    if (funcTraceHeader != null)
+        //    {
+        //        traceHeader = funcTraceHeader();
+        //    }
+
+        //    if (traceHeader == null && random.NextDouble() > config.SampleRate)
+        //        return null;
+
+        //    return new Tracer(config, aryCollector, traceHeader);
+        //}
 
 
         public Span CreateSpan(EndPoint endpoint, string name = null)
@@ -88,6 +113,70 @@ namespace Harry.Performance
         }
 
 
+        private  void OnStart()
+        {
+            List<Exception> exceptions = null;
+
+            foreach (IMetricCollector item in this.lstMetrictCollector)
+            {
+                try
+                {
+                    item.OnStart();
+                }
+                catch (Exception ex)
+                {
+                    if (exceptions == null)
+                    {
+                        exceptions = new List<Exception>();
+                    }
+                    exceptions.Add(ex);
+                }
+            }
+            if (exceptions != null && exceptions.Count > 0)
+            {
+#if NET20 || NET35
+                throw Common.Throw.MergeExceptions(exceptions);
+#else
+
+                throw new AggregateException(
+                    message: "An error occurred while called method 'OnStart'", innerExceptions: exceptions);
+#endif
+            }
+
+        }
+
+        private  void OnComplete(long elapsedMilliseconds)
+        {
+            List<Exception> exceptions = null;
+
+            foreach (IMetricCollector item in this.lstMetrictCollector)
+            {
+                try
+                {
+                    item.OnComplete(elapsedMilliseconds);
+                }
+                catch (Exception ex)
+                {
+                    if (exceptions == null)
+                    {
+                        exceptions = new List<Exception>();
+                    }
+                    exceptions.Add(ex);
+                }
+            }
+            if (exceptions != null && exceptions.Count > 0)
+            {
+#if NET20 || NET35
+                throw Common.Throw.MergeExceptions(exceptions);
+#else
+
+                throw new AggregateException(
+                    message: "An error occurred while called method 'OnComplete'.", innerExceptions: exceptions);
+#endif
+            }
+        }
+
+        #region 接口实现
         public void Collect(params Span[] spans)
         {
             if (spans == null || spans.Length <= 0)
@@ -95,7 +184,7 @@ namespace Harry.Performance
 
             List<Exception> exceptions = null;
 
-            foreach (ISpanCollector item in this.lstCollector)
+            foreach (ISpanCollector item in this.lstSpanCollector)
             {
                 try
                 {
@@ -122,79 +211,50 @@ namespace Harry.Performance
             }
 
         }
-
-
-        public void Dispose()
+        public void Start()
         {
+            if (this.state != State.Waiting)
+            {
+                return;
+            }
+
+            if (useStopwatch)
+            {
+                stopwatch = new Stopwatch();
+                stopwatch.Start();
+            }
+          
+            this.state = State.Started;
+
+            OnStart();
+        }
+
+        public void Complete()
+        {
+            if (this.state != State.Started)
+            {
+                return;
+            }
+
             long elapsedMilliseconds = 0;
             if (useStopwatch)
             {
                 stopwatch.Stop();
                 elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             }
+            this.state = State.Stoped;
 
-            List<Exception> exceptions = null;
-
-            foreach (ISpanCollector item in this.lstCollector)
-            {
-                try
-                {
-                    item.OnComplete(elapsedMilliseconds);
-                }
-                catch (Exception ex)
-                {
-                    if (exceptions == null)
-                    {
-                        exceptions = new List<Exception>();
-                    }
-                    exceptions.Add(ex);
-                }
-            }
-            if (exceptions != null && exceptions.Count > 0)
-            {
-#if NET20 || NET35
-                throw Common.Throw.MergeExceptions(exceptions);
-#else
-
-                throw new AggregateException(
-                    message: "An error occurred while writing to collector(s).", innerExceptions: exceptions);
-#endif
-            }
-
+            OnComplete(elapsedMilliseconds);
         }
 
-
-        private void onStart()
+        public void Dispose()
         {
-            List<Exception> exceptions = null;
-
-            foreach (ISpanCollector item in this.lstCollector)
+            if (this.state == State.Started)
             {
-                try
-                {
-                    item.OnStart();
-                }
-                catch (Exception ex)
-                {
-                    if (exceptions == null)
-                    {
-                        exceptions = new List<Exception>();
-                    }
-                    exceptions.Add(ex);
-                }
-            }
-            if (exceptions != null && exceptions.Count > 0)
-            {
-#if NET20 || NET35
-                throw Common.Throw.MergeExceptions(exceptions);
-#else
-
-                throw new AggregateException(
-                    message: "An error occurred while writing to collector(s).", innerExceptions: exceptions);
-#endif
+                Complete();
             }
 
         }
-
+        #endregion
     }
 }

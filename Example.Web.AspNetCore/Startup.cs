@@ -34,23 +34,21 @@ namespace Example.Web.AspNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
-            
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             
-            app.UseTracing(new AspNetCorePerformanceConfig()
-            {
-                IsEnabled = true,
-                SampleRate = 1,
-                Bypass = context =>
-                {
-                    return false;
-                }
-            });
-            app.UseMvc();
+            //app.UseTracing(new AspNetCorePerformanceConfig()
+            //{
+            //    IsEnabled = true,
+            //    SampleRate = 1,
+            //    Bypass = context =>
+            //    {
+            //        return false;
+            //    }
+            //});
+            app.UseMvc(m=> { });
 
 
         }

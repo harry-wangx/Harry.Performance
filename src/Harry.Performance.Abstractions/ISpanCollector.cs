@@ -1,20 +1,12 @@
 ﻿//-----------------------------------------------------------------------
 //收集器接口
 //-----------------------------------------------------------------------
-#if ASYNC
-using System.Threading.Tasks;
-#endif
-
 
 namespace Harry.Performance
 {
-    public interface ISpanCollector
+    public interface ISpanCollector: ICollector
     {
-        void Collect(params Span[] spans);
-
-        void OnStart();
-
-        void OnComplete(long elapsedMilliseconds);
+        void Collect(Span[] spans);
 
     }
 }

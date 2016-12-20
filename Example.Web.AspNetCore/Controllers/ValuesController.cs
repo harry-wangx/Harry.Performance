@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Example.Web.AspNetCore.Controllers
 {
+    [PerformanceActionFilter]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
