@@ -10,7 +10,7 @@ namespace Harry.Performance
         /// 添加<see cref="ICollector"/>
         /// </summary>
         /// <param name="collector"></param>
-        void AddCollector(ICollector collector);
+        ITracerBuilder AddCollector(ICollector collector);
 
         /// <summary>
         /// 创建<see cref="ITracer"/>实例

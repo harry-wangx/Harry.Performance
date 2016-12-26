@@ -6,8 +6,6 @@ using System.Collections.Concurrent;
 #endif
 
 
-
-
 namespace Harry.Performance.Collecter.Zipkin
 {
     public sealed class ZipkinCollector : ISpanCollector

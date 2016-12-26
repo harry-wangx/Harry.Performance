@@ -1,0 +1,29 @@
+﻿{
+  "version": "0.1.0-alpha1",
+
+  "dependencies": {
+    "Harry.Performance.Abstractions": "0.1.0"
+  },
+
+  "frameworks": {
+    "net40": {
+      "frameworkAssemblies": {
+
+      },
+      "dependencies": {
+        "Metrics.NET-net40": "0.2.15"
+      }
+    },
+    "net45": {
+      "buildOptions": {
+        "define": [ "ASYNC" ]
+      },
+      "frameworkAssemblies": {
+
+      },
+      "dependencies": {
+        "Metrics.NET": "0.3.7"
+      }
+    }
+  }
+}

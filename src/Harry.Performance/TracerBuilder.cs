@@ -7,9 +7,10 @@ namespace Harry.Performance
     {
         private readonly List<ICollector> lstCollector =new List<ICollector> ();
 
-        public void AddCollector(ICollector collector)
+        public ITracerBuilder AddCollector(ICollector collector)
         {
             lstCollector.Add(collector);
+            return this;
         }
 
         public ITracer Build()
